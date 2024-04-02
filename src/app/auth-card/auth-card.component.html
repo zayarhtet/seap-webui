@@ -1,0 +1,29 @@
+<div class="grid grid-rows-2 gap-4 place-content-center grid-cols-2 md:grid-cols-6 lg:grid-cols-4 {{margin}}">
+    <div class="col-span-2 md:col-start-2 lg:col-start-2 row-start-1 md:col-span-4 lg:col-span-2 row-span-2 shadow-xl rounded-lg" style="background-color: white;">
+        <div class="p-8 divide-y divide-sky-500">
+            <div class="header flex flex-col sm:items-center font-mono pb-5 text-gray-800">
+                <h1 class="tracking-widest text-5xl md:text-7xl leading-normal sm:pb-5">{{model.title}}</h1>
+                <p>{{model.linkName}} <a class="text-sky-500" [routerLink]="model.link">here</a> {{model.subheader}}</p>
+            </div>
+            <form class="body p-3 flex flex-col items-center font-sans">
+                <p-floatLabel class="p-6">
+                    <input class="w-72 sm:w-96 h-10 p-2 outline outline-sky-200 " id="username" type="text" pInputText [(ngModel)]="value.username" name="username" />
+                    <label class="" for="username">Username</label>
+                </p-floatLabel>
+                <p-floatLabel class="p-6">
+                    <input class="w-72 xs:w-72 sm:w-96 h-10 p-2 outline outline-sky-200" id="password" type="password" pInputText [(ngModel)]="value.password" name="password" />
+                    <label for="password">Password</label>
+                </p-floatLabel>
+                <p-floatLabel class="p-6" *ngIf="model.isRegister">
+                    <input class="w-72 sm:w-96 h-10 p-2 outline outline-sky-200" id="confirm-password" type="password" pInputText [(ngModel)]="value.confirmedPassword" name="confirmedPassword" />
+                    <label for="password">Confirm Password</label>
+                </p-floatLabel>
+                <p-floatLabel class="p-6" *ngIf="model.isRegister">
+                    <input class="w-72 sm:w-96 h-10 p-2 outline outline-sky-200" id="email" type="email" pInputText [(ngModel)]="value.email" name="email" />
+                    <label for="password">Email</label>
+                </p-floatLabel>
+                <button class="font-mono rounded-full bg-sky-300 px-4 py-2 mt-5 hover:bg-sky-400 hover:font-semibold" label="Submit" (click)="loginUser()">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
