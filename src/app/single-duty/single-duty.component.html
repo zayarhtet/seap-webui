@@ -1,0 +1,118 @@
+<header class="pt-4">
+    <div>
+        <button
+            class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
+            (click)="goBack()"
+        >
+            <p
+                class="pi pi-arrow-left text-md text-sky-500 font-bold px-4 group-hover:text-white"
+            ></p>
+        </button>
+    </div>
+</header>
+
+
+<div *ngIf="!isUserTutorInFamily(); else elseBlock" class="lg:mx-32 pt-4">
+    <h1 class="text-2xl md:text-4xl tracking-wide font-semibold ">
+        {{ singleDuty.title }}
+    </h1>
+    <div class="pt-8">
+        <h1 class="border-l-4 border-sky-500 pl-2 text-lg ">
+            {{ singleDuty.family.name }}
+        </h1>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide ">
+            Instruction:
+        </h1>
+        <p class="tracking-wide ">{{ singleDuty.instruction }}</p>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Published at:
+        </h1>
+        <p class="tracking-wide">{{ singleDuty.publishedAt }}</p>
+    </div>
+    <div class="pt-8 flex flex-row flex-wrap gap-y-7 gap-x-20 sm:gap-x-28">
+        <div class="flex flex-col gap-y-2">
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                Due Date:
+            </h1>
+            <p class="tracking-wide">{{ singleDuty.dueDate }}</p>
+        </div>
+        <div class="flex flex-col gap-y-2">
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                Closing at:
+            </h1>
+            <p class="tracking-wide">{{ singleDuty.closingDate }}</p>
+        </div>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Possible points:
+        </h1>
+        <p class="tracking-wide">
+            {{
+                singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass/Fail"
+            }}
+        </p>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Your points:
+        </h1>
+        <p class="tracking-wide">
+            {{ singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass" }}
+        </p>
+    </div>
+    <form
+        class="pt-8 flex flex-row flex-wrap gap-x-20 sm:gap-x-28 gap-y-7"
+        (ngSubmit)="uploadFiles(filesElement2)"
+    >
+        <input
+            name="file"
+            type="file"
+            class="block text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-2 hover:file:border-0 file:border-sky-500 file:transition-all file:duration-300 file:text-sm file:bg-white file:text-sky-500 hover:file:bg-sky-500 hover:file:text-white"
+            #filesElement2
+            multiple="true"
+        />
+        <button
+            class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
+            type="submit"
+            title="grades"
+        >
+            <p
+                class="pi pi-upload text-sm sm:text-md group-hover:text-white text-sky-500"
+            ></p>
+            <p
+                class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
+            >
+                upload
+            </p>
+        </button>
+    </form>
+    <div class="pt-8">
+        <p class="">*Multiple submission is not possible!</p>
+    </div>
+    <div class="pt-8 flex justify-center">
+        <button
+            class="hover:bg-sky-500 w-full justify-center px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
+            type="submit"
+            title="grades"
+            (click)="submitDuty()"
+        >
+            <p
+                class="pi pi-send text-sm sm:text-md group-hover:text-white text-sky-500"
+            ></p>
+            <p
+                class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
+            >
+                submit
+            </p>
+        </button>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <app-grading-duty></app-grading-duty>
+</ng-template>

@@ -1,0 +1,39 @@
+<div class="pt-4 flex flex-col gap-y-4 lg:mx-32">
+    <div *ngFor="let item of duties; index as i">
+        <div
+            class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"
+            (click)="openDuty(item.duty.duty_id)"
+        >
+            <div class="">
+                <div class="flex flex-row gap-x-2 flex-wrap gap-y-2">
+                    <h1 class="font-bold text-gray-800 ">
+                        {{ item.duty.title }}
+                    </h1>
+                    <h1 class="font-bold text-gray-800 border-l-4 sm:border-l-2 border-sky-500 pl-2">
+                        {{item.family.name}}
+                    </h1>
+                </div>
+                <div
+                    class="flex flex-row justify-between flex-wrap gap-x-10 gap-y-2 pt-2"
+                >
+                    <p
+                        class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
+                    >
+                        Published at <b>{{ item.duty.publishedAt }} </b>
+                    </p>
+                    <p
+                        class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
+                    >
+                        Due at <b>{{ item.duty.dueDate }}</b>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <p
+                    class="pi text-2xl font-bold px-4"
+                    [ngClass]="item.isSubmitted? 'pi-check  text-green-500': (hasDeadlinePassed?'pi-times text-red-500':'pi-exclamation-circle  text-yellow-500' )"
+                ></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,14 +12,18 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthCardComponent } from './auth-card/auth-card.component';
 
-import { Button, ButtonModule } from 'primeng/button';
-import { Card, CardModule } from 'primeng/card';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { PasswordModule } from 'primeng/password';
-import { InputTextModule } from 'primeng/inputtext';
+import { FileUploadModule } from 'primeng/fileupload';
+
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AuthService } from './service/auth/auth.service';
+import { MainComponent } from './main/main.component';
+import { FamilyComponent } from './family/family.component';
+import { DutyComponent } from './duty/duty.component';
+import { ProfileComponent } from './profile/profile.component';
+import { SingleFamilyComponent } from './single-family/single-family.component';
+import { SingleDutyComponent } from './single-duty/single-duty.component';
+import { GradingDutyComponent } from './grading-duty/grading-duty.component';
 
 @NgModule({
     declarations: [
@@ -29,6 +33,13 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         DashboardComponent,
         AuthCardComponent,
         PageNotFoundComponent,
+        MainComponent,
+        FamilyComponent,
+        DutyComponent,
+        ProfileComponent,
+        SingleFamilyComponent,
+        SingleDutyComponent,
+        GradingDutyComponent
     ],
     imports: [
         BrowserModule,
@@ -38,15 +49,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         BrowserAnimationsModule,
         RouterOutlet,
         RouterLink,
-        ButtonModule,
-        CardModule,
-        InputGroupModule,
-        InputGroupAddonModule,
         FloatLabelModule,
-        PasswordModule,
-        InputTextModule,
+        FileUploadModule
     ],
-    providers: [provideRouter(routes)],
+    providers: [provideRouter(routes), AuthService],
     bootstrap: [AppComponent],
 })
 export class AppModule { }

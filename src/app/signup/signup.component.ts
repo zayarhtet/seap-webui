@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
 })
 export class SignupComponent {
     model = {
-        title: 'SignUp',
+        title: 'Register',
         subheader: 'if you have already registered.',
-        link: '/login',
+        link: '/dashboard',
         linkName: 'Login',
         isRegister: true,
     };
