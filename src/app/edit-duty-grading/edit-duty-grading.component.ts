@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { FamilyService } from '../service/general/family.service';
 import { firstValueFrom } from 'rxjs';
-import { NgForm } from '@angular/forms';
-
 
 @Component({
-    selector: 'app-single-duty',
-    templateUrl: './single-duty.component.html',
-    styleUrl: './single-duty.component.scss',
+  selector: 'app-edit-duty-grading',
+  templateUrl: './edit-duty-grading.component.html',
+  styleUrl: './edit-duty-grading.component.scss'
 })
-export class SingleDutyComponent implements OnInit {
-    files: File[] = [];
+
+export class EditDutyGradingComponent implements OnInit {
     isMultiple = false;
 
     /* {{seap_host}}:{{seap_port}}/api/my/family/:famId/duty/:dutyId */
@@ -48,8 +45,6 @@ export class SingleDutyComponent implements OnInit {
     // };
 
     singleDuty: any = {};
-    fileErrorMessage = '';
-    uploadedFiles: any = []
 
     /* {{seap_host}}:{{seap_port}}/api/my/family/:famId/myrole */
     myrole = {
@@ -62,18 +57,18 @@ export class SingleDutyComponent implements OnInit {
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
-        private _location: Location,
         private _familyService: FamilyService
     ) {}
 
     ngOnInit(): void {
-        this._route.paramMap.subscribe(async (p: ParamMap) => {
+        if (this._route.parent == null) return
+        this._route.parent.paramMap.subscribe(async (p: ParamMap) => {
+            this.refreshData(p.get('famId'), p.get('dutyId'));
             let tutor = await this.isTutorInFamily(p.get('famId'));
             if (tutor != null) {
                 this.isUserTutorInFamily = tutor;
+                if (!tutor) this.goBack()
             }
-            if (this.isUserTutorInFamily) return
-            this.refreshData(p.get('famId'), p.get('dutyId'));
         });
     }
 
@@ -91,19 +86,10 @@ export class SingleDutyComponent implements OnInit {
                 console.log(err);
             },
         });
-        this._familyService.uploadSubmittedFiles(famId, dutyId, new FormData()).subscribe({
-            next:(res) => {
-                this.uploadedFiles = res.data
-            }, error:(err) => {
-                console.log(err)
-            }
-        })
-
     }
 
     goBack() {
-        this._router.navigate(['../..'], { relativeTo: this._route });
-        // this._location.back();
+        this._router.navigate(['../'], { relativeTo: this._route });
     }
 
     async isTutorInFamily(famId: string | null) {
@@ -120,46 +106,6 @@ export class SingleDutyComponent implements OnInit {
             return response.data[0].name == 'tutor';
         }
         return false;
-    }
-
-    uploadFiles(filesElement: HTMLInputElement) {
-        if (this.files.length == 0) return;
-        const formData = new FormData();
-        this.files.forEach((f) => {
-            formData.append('files', f);
-        });
-        this._familyService
-            .uploadSubmittedFiles(
-                this.singleDuty.family.familyId,
-                this.singleDuty.dutyId,
-                formData
-            )
-            .subscribe({
-                next: (res) => {
-                    this.uploadedFiles = res.data
-                    this.files = []
-                },
-                error: (err) => {
-                    console.log(err);
-                    this.files = []
-                },
-            });
-    }
-
-    changeFiles(event: any, filesElement2:any) {
-        this.fileErrorMessage = '';
-        Array.from(event.target.files).forEach((file: any) => {
-            const hasExisted = this.files.some(
-                (storedFile) => storedFile.name == file.name
-            );
-            if (!hasExisted) {
-                this.files.push(file);
-            } else {
-                this.fileErrorMessage =
-                    '*Cannot upload files with the same name: ' + file.name;
-            }
-        });
-        filesElement2.value = ''
     }
 
     downloadGivenFile(famId: string, dutyId: string, fileId: string) {
@@ -191,57 +137,4 @@ export class SingleDutyComponent implements OnInit {
             },
         });
     }
-
-    downloadSubmittedFile(famId: string, dutyId: string, fileId: string) {
-        this._familyService.downloadSubmittedFile(famId, dutyId, fileId).subscribe({
-            next: (res) => {
-                if (res.body == null) return;
-                const contentDispositionHeader = res.headers.get(
-                    'Content-Disposition'
-                );
-                const filename = contentDispositionHeader
-                    ? contentDispositionHeader
-                          .split(';')[1]
-                          .trim()
-                          .split('=')[1]
-                    : 'file';
-
-                const blob = new Blob([res.body], { type: res.body.type });
-                const blobUrl = window.URL.createObjectURL(blob);
-
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = filename;
-
-                link.click();
-                window.URL.revokeObjectURL(blobUrl);
-            },
-            error: (err) => {
-                console.log(err);
-            },
-        });
-    }
-    deleteSubmittedFile(famId: string, dutyId: string, fileId: string) {
-        this._familyService.deleteSubmittedFile(famId, dutyId, fileId).subscribe({
-            next: (res) => {
-                this._familyService.uploadSubmittedFiles(famId, dutyId, new FormData()).subscribe({
-                    next:(res) => {
-                        this.uploadedFiles = res.data
-                    }, error:(err) => {
-                        console.log(err)
-                    }
-                })
-            },
-            error: (err) => {
-                console.log(err)
-            }
-        })
-    }
-
-    removeFromFiles(index: number) {
-        this.fileErrorMessage = ''
-        this.files.splice(index, 1);
-    }
-
-    submitDuty() {}
 }

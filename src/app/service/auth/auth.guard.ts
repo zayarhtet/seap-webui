@@ -12,22 +12,22 @@ export const TutorAuthGuard: CanActivateFn = (route, state) => {
     return true;
 };
 
-export const AuthGuard: CanActivateFn = (route, state) => {
+export const AuthGuard: CanActivateFn = async (route, state) => {
     const authService = inject(AuthService)
     const router = inject(Router)
 
-    if (!authService.isLoggedIn()) {
+    if (!await authService.isLoggedIn()) {
         return router.createUrlTree(['/login'])
     }
     return true;
 };
 
-export const AfterLoggedinGuard: CanActivateFn = (route, state) => {
+export const AfterLoggedinGuard: CanActivateFn = async (route, state) => {
     const authService = inject(AuthService)
     const router = inject(Router)
 
-    if (authService.isLoggedIn() && route.url.find(x => Object.values(pathBeforeLogin).includes(x.path)) != null ) {
-        console.log("loggedin logged in " + route.url[0].path)
+    if (await authService.isLoggedIn() && route.url.find(x => Object.values(pathBeforeLogin).includes(x.path)) != null ) {
+        // console.log("loggedin logged in " + route.url[0].path)
         return router.createUrlTree(['/main'])
     }
     return true;

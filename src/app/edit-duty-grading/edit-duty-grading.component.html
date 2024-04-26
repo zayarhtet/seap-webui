@@ -1,0 +1,112 @@
+<header class="">
+    <div>
+        <button
+            class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
+            (click)="goBack()"
+        >
+            <p
+                class="pi pi-arrow-left text-md text-sky-500 font-bold px-4 group-hover:text-white"
+            ></p>
+        </button>
+    </div>
+</header>
+
+<div *ngIf="isUserTutorInFamily" class="lg:mx-32 pt-4">
+    <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
+        {{ singleDuty.title }}
+    </h1>
+    <div class="pt-8">
+        <h1 class="border-l-4 border-sky-500 pl-2 text-lg">
+            {{ singleDuty.family == null ? "" : singleDuty.family.name }}
+        </h1>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Instruction:
+        </h1>
+        <p class="tracking-wide">{{ singleDuty.instruction }}</p>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Published at:
+        </h1>
+        <p class="tracking-wide">{{ singleDuty.publishedAt }}</p>
+    </div>
+    <div class="pt-8 flex flex-row flex-wrap gap-y-7 gap-x-20 sm:gap-x-28">
+        <div class="flex flex-col gap-y-2">
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                Due Date:
+            </h1>
+            <p class="tracking-wide">{{ singleDuty.dueDate }}</p>
+        </div>
+        <div class="flex flex-col gap-y-2">
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                Closing at:
+            </h1>
+            <p class="tracking-wide">{{ singleDuty.closingDate }}</p>
+        </div>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            attachments:
+        </h1>
+        <div
+            *ngIf="
+                singleDuty.files != null && singleDuty.files.length != 0;
+                else nullAttachment
+            "
+            class="grid grid-cols-1 sm:grid-cols-2"
+        >
+            <div class="flex flex-col gap-y-2">
+                <div *ngFor="let file of singleDuty.files; index as i">
+                    <div
+                        class="grid grid-cols-2 bg-white border-2 border-sky-500 rounded-md text-sm"
+                    >
+                        <div class="flex items-center">
+                            <h1 class="px-2 py-1 text-sm">
+                                {{ file.filePath }}
+                            </h1>
+                        </div>
+
+                        <div class="flex items-center justify-end">
+                            <p
+                                class="pi pi-download py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
+                                (click)="
+                                    downloadGivenFile(
+                                        singleDuty.family.familyId,
+                                        singleDuty.dutyId,
+                                        file.fileId
+                                    )
+                                "
+                            ></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Possible points:
+        </h1>
+        <p class="tracking-wide">
+            {{
+                singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass/Fail"
+            }}
+        </p>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            Your points:
+        </h1>
+        <p class="tracking-wide">
+            {{ singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass" }}
+        </p>
+    </div>
+</div>
+
+<ng-template #nullAttachment>
+    <div class="grid grid-cols-1 sm:grid-cols-2">
+        <p class="">_</p>
+    </div>
+</ng-template>

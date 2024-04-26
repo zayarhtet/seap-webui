@@ -27,7 +27,7 @@
             <button
                 class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
                 (click)="createNewDuty()"
-                *ngIf="isUserTutorInFamily()"
+                *ngIf="isUserTutorInFamily"
                 title="grades"
             >
                 <p
@@ -41,8 +41,8 @@
             </button>
             <button
                 class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
-                (click)="createNewDuty()"
-                *ngIf="isUserTutorInFamily()"
+                (click)="openMember()"
+                *ngIf="isUserTutorInFamily"
                 title="members"
             >
                 <p
@@ -57,7 +57,7 @@
             <button
                 class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
                 (click)="createNewDuty()"
-                *ngIf="isUserTutorInFamily()"
+                *ngIf="isUserTutorInFamily"
                 title="create duty"
             >
                 <p
@@ -73,7 +73,18 @@
     </div>
 </header>
 
-<div class="pt-4 flex flex-col gap-y-4 lg:mx-32" *ngIf="!isUserTutorInFamily(); else elseBlock">
+
+<div class="pt-4 flex flex-col gap-y-4 lg:mx-32" *ngIf="!isUserTutorInFamily; else elseBlock">
+    <div *ngIf="!isLoading && singleFamily.dutiesWithSubmission != null && singleFamily.dutiesWithSubmission.length == 0">
+        <div class="justify-center my-20 flex">
+            <h1 class="text-lg md:text-xl tracking-wide font-semibold ">There is no duties here.</h1>
+        </div>
+    </div>
+    <div *ngIf="isLoading">
+        <div class="justify-center my-20 flex">
+            <h1 class="text-lg md:text-xl tracking-wide font-semibold ">Loading...</h1>
+        </div>
+    </div>
     <div *ngFor="let item of singleFamily.dutiesWithSubmission; index as i">
         <div
             class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"
@@ -110,6 +121,11 @@
 
 <ng-template #elseBlock>
     <div class="pt-4 flex flex-col gap-y-4 lg:mx-32">
+        <div *ngIf="singleFamily.duties != null && singleFamily.duties.length == 0">
+            <div class="justify-center my-20 flex">
+                <h1 class="text-lg md:text-xl tracking-wide font-semibold ">There is no duties here.</h1>
+            </div>
+        </div>
         <div *ngFor="let item of singleFamily.duties; index as i">
             <div
                 class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"

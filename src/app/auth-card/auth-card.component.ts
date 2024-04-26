@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../service/auth/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgModel, NgForm, AbstractControl } from '@angular/forms';
 
 @Component({
@@ -36,7 +36,11 @@ export class AuthCardComponent implements OnInit {
         confirmedPasswordError: '',
     };
 
-    constructor(private _auth: AuthService, private _router: Router) {}
+    constructor(
+        private _auth: AuthService,
+        private _router: Router,
+        private _route: ActivatedRoute
+    ) {}
 
     ngOnInit() {
         if (this.model.isRegister) {
@@ -47,22 +51,34 @@ export class AuthCardComponent implements OnInit {
     }
 
     loginUser(loginNgForm: NgForm) {
-        Object.keys(loginNgForm.controls).forEach(key => {
+        Object.keys(loginNgForm.controls).forEach((key) => {
             loginNgForm.controls[key].markAsTouched();
         });
         if (loginNgForm.invalid) {
-            console.log('INVALID LOGIN!');
             return;
         }
 
-        this._auth.loginRequest(this.authModelState).subscribe({
-            next: (res) => {
-                console.log(res);
-                this._router.navigate(['/dashboard']);
-            },
-            error: (err) => console.log(err),
-        });
-        Object.keys(loginNgForm.controls).forEach(key => {
+        if (!this.model.isRegister) {
+            this._auth.loginRequest(this.authModelState).subscribe({
+                next: (res) => {
+                    sessionStorage.setItem('token', res.token);
+                    this._router.navigate(['main']);
+                },
+                error: (err) => console.log(err),
+            });
+        } else {
+            this._auth.signupRequest(this.authModelState).subscribe({
+                next: (res) => {
+                    this._router.navigate(['..', 'login'], {
+                        relativeTo: this._route,
+                    });
+                },
+                error: (err) => {
+                    console.log(err);
+                },
+            });
+        }
+        Object.keys(loginNgForm.controls).forEach((key) => {
             loginNgForm.controls[key].markAsUntouched();
             loginNgForm.controls[key].setValue('');
         });
@@ -89,10 +105,7 @@ export class AuthCardComponent implements OnInit {
     setPasswordError(password: string | null) {
         if (password == null || password.trim().length == 0) {
             this.validationErrorLog.password = 'password is required!';
-        } else if (
-            password.trim().length < 8 ||
-            password.trim().length > 20
-        ) {
+        } else if (password.trim().length < 8 || password.trim().length > 20) {
             this.validationErrorLog.password = 'password is invalid!';
         } else {
             return true;

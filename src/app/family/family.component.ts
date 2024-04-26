@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FamilyService } from '../service/general/family.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-family',
@@ -8,8 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class FamilyComponent implements OnInit {
     /* {{seap_host}}:{{seap_port}}/api/my/families */
-    families = [
-        {
+    /*
+    {
             families: {
                 familyId: '25929b0c-b2f3-4bf4-966e-7d5782d549c8',
                 name: 'Thesis3',
@@ -22,116 +24,69 @@ export class FamilyComponent implements OnInit {
             },
             addedAt: '2024-03-13T14:54:43+01:00',
         },
-        {
-            families: {
-                familyId: '803360bc-71f4-4b10-a119-ed93de707650',
-                name: 'Imperative Programming',
-                info: '23/24/2 Group 1',
-                icon: '/fp.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-10T19:35:41+01:00',
-        },
-        {
-            families: {
-                familyId: '9dc1b896-4384-4cc8-bbcc-aaa773067153',
-                name: 'Object-oriented Programming',
-                info: '23/24/2 Group 1',
-                icon: '/fp.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-13T15:20:33+01:00',
-        },
-        {
-            families: {
-                familyId: 'c64fec03-c9e7-4930-a8f4-de677f55b777',
-                name: 'Thesis',
-                info: 'Thesis submission',
-                icon: './thesis.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-13T14:52:17+01:00',
-        },
-        {
-            families: {
-                familyId: 'f9851625-601c-483b-8efa-643bd9a55b8a',
-                name: 'Thesis',
-                info: 'Thesis submission',
-                icon: './thesis.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-13T14:49:31+01:00',
-        },
-        {
-            families: {
-                familyId: 'f9851625-601c-483b-8efa-643bd9a55b8a',
-                name: 'Thesis',
-                info: 'Thesis submission',
-                icon: './thesis.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-13T14:49:31+01:00',
-        },
-        {
-            families: {
-                familyId: 'f9851625-601c-483b-8efa-643bd9a55b8a',
-                name: 'Thesis',
-                info: 'Thesis submission',
-                icon: './thesis.png',
-            },
-            familyRole: {
-                roleId: 1,
-                name: 'tutor',
-            },
-            addedAt: '2024-03-13T14:49:31+01:00',
-        },
-        {
-            families: {
-                familyId: 'ff716cbb-501f-471b-b84c-fdc1b6cd6f16',
-                name: 'Functional Programming',
-                info: '23/24/2 Group 1',
-                icon: '/fp.png',
-            },
-            familyRole: {
-                roleId: 2,
-                name: 'tutee',
-            },
-            addedAt: '2024-03-10T19:35:41+01:00',
-        },
-    ];
-    hello = true;
+    */
+    families: any[] = [];
+    isLoading = true;
+    isTutor = false;
 
-    constructor(private _router: Router, private _route: ActivatedRoute) {}
+    constructor(
+        private _router: Router,
+        private _route: ActivatedRoute,
+        private _familyService: FamilyService
+    ) {}
 
-    ngOnInit(): void {}
-
-    createNewFamily() {
-        console.log('CLICKED create family');
+    async ngOnInit(): Promise<void> {
+        this.refreshData();
+        this.isTutor = await this.isUserTutor();
     }
 
-    isUserTutor(): boolean {
-        return this.hello;
+    createNewFamily() {
+        this._router.navigate(['new-family'], {
+            skipLocationChange: false,
+            relativeTo: this._route,
+        });
+    }
+
+    async isUserTutor(): Promise<boolean> {
+        const response = await firstValueFrom(
+            this._familyService.getMyRole()
+        ).catch((r) => {});
+
+        if (response == null) return false;
+        if (response.data.length > 0) {
+            return response.data[0].name == 'tutor';
+        }
+        return false;
     }
 
     perform(familyId: any) {
         this._router.navigate([familyId], {
             skipLocationChange: false,
             relativeTo: this._route,
+        });
+    }
+
+    refreshData() {
+        this._familyService.getMyFamilies().subscribe({
+            next: (res) => {
+                this.families = res.data;
+                this.families.forEach((family)=> {
+                    this.isLoading = false
+                    this._familyService.getMyFamilyIcon(family.families.familyId).subscribe({
+                        next:(data: ArrayBuffer) => {
+                            const blob = new Blob([data], { type: 'image/*' });
+                            family.families.icon = URL.createObjectURL(blob);
+                        },
+                        error: (err) => {
+                            // console.log(family.families.familyId)
+                        }
+                    })
+                })
+            },
+            error: (err) => {
+                this.isLoading = false
+                console.log(err);
+            },
         });
     }
 }

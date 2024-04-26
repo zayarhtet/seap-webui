@@ -1,22 +1,45 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+
+export const ENDPOINT = 'http://172.21.215.221:8000/api/';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    private _loginURL = 'http://172.21.215.221:8000/api/auth/login';
-    public authGuard = ''
+    private _loginURL = ENDPOINT + 'auth/login';
+    private _loggedinURL = ENDPOINT + 'my/valid';
+    private _signupURL = ENDPOINT + 'auth/register';
+
+    public authGuard = '';
     constructor(private http: HttpClient) {}
 
     loginRequest(user: any) {
         return this.http.post<any>(this._loginURL, user);
     }
+
+    signupRequest(user: any) {
+        return this.http.post<any>(this._signupURL, user);
+    }
+
     private loggedin = true;
 
-    isLoggedIn( ) {
-        return this.loggedin;
+    async isLoggedIn() {
+        let token = sessionStorage.getItem('token');
+        if (token == null) {
+            return false;
+        }
+
+        let response = await firstValueFrom(
+            this.http.get(this._loggedinURL, { observe: 'response' })
+        ).catch((r) => {});
+
+        if (response == null) {
+            this.deleteToken();
+            return false;
+        }
+        return response.status == 200;
     }
 
     isTutee() {
@@ -25,5 +48,13 @@ export class AuthService {
 
     isTutor() {
         return this.loggedin;
+    }
+    getToken() {
+        return sessionStorage.getItem('token');
+    }
+
+    deleteToken() {
+        console.log('deleted');
+        sessionStorage.removeItem('token');
     }
 }

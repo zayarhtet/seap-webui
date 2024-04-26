@@ -1,5 +1,5 @@
 <header class="pt-4">
-    <div class="flex justify-end" *ngIf="isUserTutor()">
+    <div class="flex justify-end" *ngIf="isTutor">
         <button
             class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
             (click)="createNewFamily()"
@@ -16,16 +16,31 @@
     </div>
 </header>
 
+<div *ngIf="isLoading">
+    <div class="justify-center my-20 flex">
+        <h1 class="text-lg md:text-xl tracking-wide font-semibold ">Loading...</h1>
+    </div>
+</div>
+
+<div *ngIf="!isLoading && families.length == 0">
+    <div class="justify-center my-20 flex">
+        <h1 class="text-xl md:text-2xl tracking-wide font-semibold ">There is no family here.</h1>
+    </div>
+</div>
+
+
 <div class="pt-8 flex flex-col gap-y-6 lg:mx-32">
     <div *ngFor="let item of families; index as i">
         <div
             class="rounded-md flex flex-row items-center bg-white h-24 sm:h-28 hover:bg-sky-200 group hover:-translate-y-2 hover:shadow-lg transition-all duration-300 outline-sky-500 outline outline-2 cursor-pointer"
             (click)="perform(item.families.familyId)"
         >
-            <div class="rounded-l-md bg-gray-300 min-w-20 sm:w-28 h-full"></div>
+            <div class="rounded-l-md bg-gray-300 min-w-20 sm:w-28 h-full hidden sm:block">
+                <img class="w-28 h-full" src="{{item.families.icon}}" alt="profile">
+            </div>
             <div class="p-4 flex flex-col gap-y-2">
                 <h1
-                    class=" text-md sm:text-xl font-semibold tracking-wide transition-all duration-0"
+                    class="text-md sm:text-xl font-semibold tracking-wide transition-all duration-0"
                 >
                     {{ item.families.name }}
                 </h1>

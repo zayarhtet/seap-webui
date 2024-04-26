@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FamilyService } from '../service/general/family.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-duty',
@@ -62,7 +64,26 @@ export class DutyComponent implements OnInit {
     ];
     hasDeadlinePassed = false;
 
-    ngOnInit(): void {}
+    constructor(
+        private _router: Router,
+        private _route: ActivatedRoute,
+        private _familyService: FamilyService
+    ) {}
+    ngOnInit(): void {
+        this.refreshData();
+    }
 
-    openDuty(id:string) {}
+    openDuty(id: string) {}
+
+    refreshData() {
+        this._familyService.getMyDuties().subscribe({
+            next: (res) => {
+                this.duties = res.data;
+                console.log(res.data)
+            },
+            error: (err) => {
+                console.log(err);
+            },
+        });
+    }
 }

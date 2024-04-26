@@ -9,7 +9,7 @@ export class SignupComponent {
     model = {
         title: 'Register',
         subheader: 'if you have already registered.',
-        link: '/dashboard',
+        link: '/login',
         linkName: 'Login',
         isRegister: true,
     };

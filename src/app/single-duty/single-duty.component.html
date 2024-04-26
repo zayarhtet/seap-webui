@@ -1,4 +1,4 @@
-<header class="pt-4">
+<header class="">
     <div>
         <button
             class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
@@ -11,21 +11,20 @@
     </div>
 </header>
 
-
-<div *ngIf="!isUserTutorInFamily(); else elseBlock" class="lg:mx-32 pt-4">
-    <h1 class="text-2xl md:text-4xl tracking-wide font-semibold ">
+<div *ngIf="!isUserTutorInFamily; else elseBlock" class="lg:mx-32 pt-4">
+    <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
         {{ singleDuty.title }}
     </h1>
     <div class="pt-8">
-        <h1 class="border-l-4 border-sky-500 pl-2 text-lg ">
-            {{ singleDuty.family.name }}
+        <h1 class="border-l-4 border-sky-500 pl-2 text-lg">
+            {{ singleDuty.family == null ? "" : singleDuty.family.name }}
         </h1>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
-        <h1 class="text-sm md:text-md font-semibold tracking-wide ">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
             Instruction:
         </h1>
-        <p class="tracking-wide ">{{ singleDuty.instruction }}</p>
+        <p class="tracking-wide">{{ singleDuty.instruction }}</p>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
@@ -49,6 +48,40 @@
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            attachments:
+        </h1>
+        <div
+            *ngIf="singleDuty.files != null && singleDuty.files.length != 0; else nullAttachment"
+            class="grid grid-cols-1 sm:grid-cols-2"
+        >
+            <div class="flex flex-col gap-y-2">
+                <div *ngFor="let file of singleDuty.files; index as i">
+                    <div
+                        class="grid grid-cols-2 bg-white border-2 border-sky-500 rounded-md text-sm"
+                    >
+                    <div class="flex items-center">
+                        <h1 class="px-2 py-1 text-sm break-all">{{ file.filePath }}</h1>
+                    </div>
+                    <div class="flex justify-end items-center">
+
+                        <p
+                        class="pi pi-download py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
+                        (click)="
+                                downloadGivenFile(
+                                    singleDuty.family.familyId,
+                                    singleDuty.dutyId,
+                                    file.fileId
+                                )
+                                "
+                        ></p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
             Possible points:
         </h1>
         <p class="tracking-wide">
@@ -65,16 +98,70 @@
             {{ singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass" }}
         </p>
     </div>
+    <div class="pt-8 flex flex-col gap-y-2">
+        <h1 class="text-sm md:text-md font-semibold tracking-wide">
+            uploaded:
+        </h1>
+        <div
+            *ngIf="
+                uploadedFiles != null && uploadedFiles.length != 0;
+                else nullIcon
+            "
+            class="grid grid-cols-1 sm:grid-cols-2"
+        >
+            <div class="flex flex-col gap-y-2">
+                <div *ngFor="let file of uploadedFiles; index as i">
+                    <div
+                        class="grid grid-cols-3 bg-white border-2 border-sky-500 rounded-md text-sm"
+                    >
+                        <div class="flex items-center">
+                            <h1 class="px-2 py-1 text-sm break-all">
+                                {{ file.filePath }}
+                            </h1>
+                        </div>
+                        <div class="flex items-center">
+                            <h1 class="px-2 py-1 text-sm break-all">
+                                {{ file.submittedAt }}
+                            </h1>
+                        </div>
+                        <div class="flex justify-end items-center">
+                            <p
+                                class="pi pi-download py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
+                                (click)="
+                                    downloadSubmittedFile(
+                                        singleDuty.family.familyId,
+                                        singleDuty.dutyId,
+                                        file.fileId
+                                    )
+                                "
+                            ></p>
+                            <p
+                                class="pi pi-times py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
+                                (click)="
+                                    deleteSubmittedFile(
+                                        singleDuty.family.familyId,
+                                        singleDuty.dutyId,
+                                        file.fileId
+                                    )
+                                "
+                            ></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <form
         class="pt-8 flex flex-row flex-wrap gap-x-20 sm:gap-x-28 gap-y-7"
         (ngSubmit)="uploadFiles(filesElement2)"
     >
         <input
+            #filesElement2
             name="file"
             type="file"
-            class="block text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-2 hover:file:border-0 file:border-sky-500 file:transition-all file:duration-300 file:text-sm file:bg-white file:text-sky-500 hover:file:bg-sky-500 hover:file:text-white"
-            #filesElement2
+            class="block text-sm text-transparent file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-2 hover:file:border-0 file:border-sky-500 file:transition-all file:duration-300 file:text-sm file:bg-white file:text-sky-500 hover:file:bg-sky-500 hover:file:text-white"
             multiple="true"
+            (change)="changeFiles($event, filesElement2)"
         />
         <button
             class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
@@ -91,6 +178,30 @@
             </p>
         </button>
     </form>
+    <div *ngIf="files.length != 0" class="grid grid-cols-1 sm:grid-cols-2 pt-2">
+        <div class="flex flex-col gap-y-2">
+            <div *ngFor="let file of files; index as i">
+                <div
+                    class="grid grid-cols-2 bg-white border-2 border-sky-500 rounded-md text-sm"
+                >
+                    <div class="flex items-center">
+                        <h1 class="px-2 py-1 text-sm break-all">{{ file.name }}</h1>
+                    </div>
+                    <div class="flex justify-end items-center">
+                        <p
+                        class="pi pi-times py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
+                        (click)="removeFromFiles(i)"
+                        ></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="fileErrorMessage.length != 0" class="pt-2">
+        <p class="text-sm md:text-md tracking-wide text-red-500 font-semibold">
+            {{ fileErrorMessage }}
+        </p>
+    </div>
     <div class="pt-8">
         <p class="">*Multiple submission is not possible!</p>
     </div>
@@ -114,5 +225,19 @@
 </div>
 
 <ng-template #elseBlock>
-    <app-grading-duty></app-grading-duty>
+    <app-grading-duty
+        [dutyTitle]="singleDuty.title"
+        [familyName]="singleDuty.family == null ? '' : singleDuty.family.name"
+    ></app-grading-duty>
+</ng-template>
+
+<ng-template #nullIcon>
+    <div class="grid grid-cols-1 sm:grid-cols-2">
+        <p>nothing has uploaded.</p>
+    </div>
+</ng-template>
+<ng-template #nullAttachment>
+    <div class="grid grid-cols-1 sm:grid-cols-2">
+        <p class="">_</p>
+    </div>
 </ng-template>
