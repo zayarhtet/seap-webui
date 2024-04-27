@@ -70,8 +70,8 @@ export class FamilyComponent implements OnInit {
         this._familyService.getMyFamilies().subscribe({
             next: (res) => {
                 this.families = res.data;
+                this.isLoading = false
                 this.families.forEach((family)=> {
-                    this.isLoading = false
                     this._familyService.getMyFamilyIcon(family.families.familyId).subscribe({
                         next:(data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'image/*' });

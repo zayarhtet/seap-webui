@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FamilyService } from '../service/general/family.service';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class NewGradingComponent implements OnInit {
         isGraded: true,
         points: 0,
         isLate: false,
+        hasGraded: false,
         isPassed: false,
         gradeComment: 'VVERYBAD',
         executionComment: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga quas quaerat laboriosam non perferendis dicta quos nisi temporibus cupiditate eligendi numquam nam, delectus eos aspernatur recusandae maiores dolorem praesentium a!',
@@ -36,26 +38,45 @@ export class NewGradingComponent implements OnInit {
     // @Input({required: true}) isPointSystem!: boolean;
     // @Input({required: true})
 
-    newGrade : any = {}
+    newGrade : any = {
+        points: 0,
+        username: '',
+        gradeComment: ''
+    }
 
     @Output() submitted = new EventEmitter <string>();
     @Output() cancelled = new EventEmitter <string>();
 
-    constructor() {}
+    constructor(
+        private _familyService: FamilyService
+    ) {}
 
     ngOnInit(): void {
-        this.newGrade.familyId = this.grading.familyId
+        this.newGrade.username = this.grading.username
+        this.newGrade.gradingId = this.grading.gradingId
         if (!this.grading.duty.isPointSystem) this.newGrade.points = -1
 
     }
 
     submitGrade() {
-        console.log("submitted grade")
-        this.submitted.emit()
+        console.log( this.grading.familyId)
+        console.log(this.newGrade)
+        this._familyService.updateGrading(this.grading.familyId, this.newGrade).subscribe({
+            next: (res) => {
+                console.log(res)
+                this.submitted.emit()
+            },
+            error: (err) => {
+                this.submitted.emit()
+                console.log(err)
+            }
+        })
+        // this.submitted.emit()
     }
 
     cancelGrade() {
         console.log("cancelled grade")
         this.cancelled.emit()
     }
+    
 }

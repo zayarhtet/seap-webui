@@ -27,6 +27,7 @@ export class FamilyService {
     private _deleteSubmittedFileURL =
         ENDPOINT +
         'my/cdn/delete/family/:famId/duty/:dutyId/submitted-file/:fileId';
+    private _updateGradingURL = ENDPOINT + 'my/family/:famId/create/grade'
 
     constructor(private http: HttpClient) {}
 
@@ -127,6 +128,13 @@ export class FamilyService {
                 .replace(':famId', famId)
                 .replace(':dutyId', dutyId)
                 .replace(':fileId', fileId)
+        );
+    }
+
+    updateGrading(famId: string, newGrade: any) {
+        return this.http.post<any>(
+            this._updateGradingURL.replace(':famId', famId),
+            newGrade
         );
     }
 }

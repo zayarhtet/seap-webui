@@ -20,6 +20,8 @@ export class AuthCardComponent implements OnInit {
         password: 'password',
         confirmedPassword: 'confirmedPassword',
         email: 'email',
+        firstname: 'firstname',
+        lastname: 'lastname'
     };
 
     areValid = {

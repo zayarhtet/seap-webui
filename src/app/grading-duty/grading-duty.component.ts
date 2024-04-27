@@ -80,4 +80,33 @@ export class GradingDutyComponent implements OnInit {
         detailComponent.classList.toggle('hidden')
         newGradeComponent.classList.toggle('hidden')
     }
+    downloadGivenFile(famId: string, dutyId: string, fileId: string) {
+        this._familyService.downloadSubmittedFile(famId, dutyId, fileId).subscribe({
+            next: (res) => {
+                if (res.body == null) return;
+                const contentDispositionHeader = res.headers.get(
+                    'Content-Disposition'
+                );
+                const filename = contentDispositionHeader
+                    ? contentDispositionHeader
+                          .split(';')[1]
+                          .trim()
+                          .split('=')[1]
+                    : 'file';
+
+                const blob = new Blob([res.body], { type: res.body.type });
+                const blobUrl = window.URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = filename;
+
+                link.click();
+                window.URL.revokeObjectURL(blobUrl);
+            },
+            error: (err) => {
+                console.log(err);
+            },
+        });
+    }
 }

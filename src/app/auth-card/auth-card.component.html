@@ -27,13 +27,45 @@
                 (ngSubmit)="loginUser(loginSignup)"
                 class="body p-3 flex flex-col items-center font-sans"
             >
+                <div class="p-6" *ngIf="model.isRegister">
+                    <p-floatLabel>
+                        <input
+                            class="w-60 sm:w-96 h-10 p-2 outline outline-sky-200"
+                            id="confirm-password"
+                            type="text"
+                            name="{{ inputNames.firstname }}"
+                            [(ngModel)]="authModelState.firstname"
+                            pInputText
+                            required
+                        />
+                        <label for="password">first name</label>
+                    </p-floatLabel>
+                </div>
+                <div class="p-6" *ngIf="model.isRegister">
+                    <p-floatLabel>
+                        <input
+                            class="w-60 sm:w-96 h-10 p-2 outline outline-sky-200"
+                            id="confirm-password"
+                            type="text"
+                            name="{{ inputNames.lastname }}"
+                            [(ngModel)]="authModelState.lastname"
+                            pInputText
+                            required
+                        />
+                        <label for="password">last name</label>
+                    </p-floatLabel>
+                </div>
                 <div class="p-6">
                     <p-floatLabel>
                         <input
                             #username="ngModel"
-                            [ngClass]="!validateUsername(username) ? 'outline-red-500' : 'outline-sky-200'"
+                            [ngClass]="
+                                !validateUsername(username)
+                                    ? 'outline-red-500'
+                                    : 'outline-sky-200'
+                            "
                             id="username"
-                            class="w-72 sm:w-96 h-10 p-2 outline"
+                            class="w-60 sm:w-96 h-10 p-2 outline"
                             name="{{ inputNames.username }}"
                             type="text"
                             [(ngModel)]="authModelState.username"
@@ -41,9 +73,13 @@
                             required
                         />
                         <label
-                        [ngClass]="!validateUsername(username) ? 'text-red-500' : 'text-gray-500'"
-                        for="username"
-                            >Username</label
+                            [ngClass]="
+                                !validateUsername(username)
+                                    ? 'text-red-500'
+                                    : 'text-gray-500'
+                            "
+                            for="username"
+                            >username</label
                         >
                     </p-floatLabel>
                     <small
@@ -56,19 +92,27 @@
                     <p-floatLabel>
                         <input
                             #password="ngModel"
-                            class="w-72 xs:w-72 sm:w-96 h-10 p-2 outline"
+                            class="w-60 xs:w-72 sm:w-96 h-10 p-2 outline"
                             id="password"
                             name="{{ inputNames.password }}"
                             type="password"
-                            [ngClass]="!validatePassword(password) ? 'outline-red-500' : 'outline-sky-200'"
+                            [ngClass]="
+                                !validatePassword(password)
+                                    ? 'outline-red-500'
+                                    : 'outline-sky-200'
+                            "
                             [(ngModel)]="authModelState.password"
                             pInputText
                             required
                         />
                         <label
                             for="password"
-                            [ngClass]="!validatePassword(password) ? 'text-red-500' : 'text-gray-500'"
-                            >Password</label
+                            [ngClass]="
+                                !validatePassword(password)
+                                    ? 'text-red-500'
+                                    : 'text-gray-500'
+                            "
+                            >password</label
                         >
                     </p-floatLabel>
                     <small
@@ -79,7 +123,7 @@
                 </div>
                 <p-floatLabel class="p-6" *ngIf="model.isRegister">
                     <input
-                        class="w-72 sm:w-96 h-10 p-2 outline outline-sky-200"
+                        class="w-60 sm:w-96 h-10 p-2 outline outline-sky-200"
                         id="confirm-password"
                         type="password"
                         name="{{ inputNames.confirmedPassword }}"
@@ -87,11 +131,11 @@
                         pInputText
                         required
                     />
-                    <label for="password">Confirm Password</label>
+                    <label for="password">confirm password</label>
                 </p-floatLabel>
                 <p-floatLabel class="p-6" *ngIf="model.isRegister">
                     <input
-                        class="w-72 sm:w-96 h-10 p-2 outline outline-sky-200"
+                        class="w-60 sm:w-96 h-10 p-2 outline outline-sky-200"
                         id="email"
                         type="email"
                         name="{{ inputNames.email }}"
@@ -99,7 +143,7 @@
                         pInputText
                         [(ngModel)]="authModelState.email"
                     />
-                    <label for="password">Email</label>
+                    <label for="password">email</label>
                 </p-floatLabel>
                 <button
                     class="text-sky-500 font-mono rounded-md border-2 border-sky-500 bg-white px-3 py-1 mt-5 hover:bg-sky-500 hover:text-white transition-all"
