@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { FamilyService } from '../service/general/family.service';
 import { firstValueFrom } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -17,7 +17,7 @@ export class SingleDutyComponent implements OnInit {
 
     /* {{seap_host}}:{{seap_port}}/api/my/family/:famId/duty/:dutyId */
     // singleDuty = {
-    //     duty_id: '44062536-0d5c-422d-9dd2-b4b03fb7b3df',
+    //     dutyId: '44062536-0d5c-422d-9dd2-b4b03fb7b3df',
     //     title: 'PT1',
     //     instruction: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos nam officia sit excepturi maxime? Quo perspiciatis ipsam, nesciunt vitae sequi maiores, officiis deleniti temporibus culpa aliquam dicta obcaecati blanditiis inventore.',
     //     publishedAt: '2024-03-16T14:30:45+01:00',
@@ -49,7 +49,9 @@ export class SingleDutyComponent implements OnInit {
 
     singleDuty: any = {};
     fileErrorMessage = '';
+    grading: any = {};
     uploadedFiles: any = []
+    expired: boolean = false
 
     /* {{seap_host}}:{{seap_port}}/api/my/family/:famId/myrole */
     myrole = {
@@ -63,7 +65,8 @@ export class SingleDutyComponent implements OnInit {
         private _router: Router,
         private _route: ActivatedRoute,
         private _location: Location,
-        private _familyService: FamilyService
+        private _familyService: FamilyService,
+        private _datePipe: DatePipe
     ) {}
 
     ngOnInit(): void {
@@ -72,8 +75,8 @@ export class SingleDutyComponent implements OnInit {
             if (tutor != null) {
                 this.isUserTutorInFamily = tutor;
             }
-            if (this.isUserTutorInFamily) return
             this.refreshData(p.get('famId'), p.get('dutyId'));
+            // if (this.isUserTutorInFamily) return
         });
     }
 
@@ -84,6 +87,7 @@ export class SingleDutyComponent implements OnInit {
             next: (res) => {
                 if (res.data.length > 0) {
                     this.singleDuty = res.data[0];
+                    this.expired = new Date() > new Date(this.singleDuty.closingDate)
                 }
             },
             error: (err) => {
@@ -91,14 +95,29 @@ export class SingleDutyComponent implements OnInit {
                 console.log(err);
             },
         });
-        this._familyService.uploadSubmittedFiles(famId, dutyId, new FormData()).subscribe({
-            next:(res) => {
-                this.uploadedFiles = res.data
-            }, error:(err) => {
-                console.log(err)
-            }
-        })
+        if (!this.isUserTutorInFamily) {
 
+            this._familyService.uploadSubmittedFiles(famId, dutyId, new FormData()).subscribe({
+                next:(res) => {
+                    this.uploadedFiles = res.data
+                }, error:(err) => {
+                    console.log(err)
+                }
+            })
+        }
+        if (!this.isUserTutorInFamily) {
+            this._familyService.getGradingById(famId, dutyId).subscribe({
+                next: (res) => {
+                    if (res.data.length > 0) {
+                        this.grading = res.data[0];
+                        this.expired = this.expired || this.grading.isSubmitted
+                    }
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+            })
+        }
     }
 
     goBack() {
@@ -243,5 +262,21 @@ export class SingleDutyComponent implements OnInit {
         this.files.splice(index, 1);
     }
 
-    submitDuty() {}
+    submitDuty() {
+        if (!confirm("Are you sure you want to submit? Once you submit, you cannot modify it.")) return
+        this._familyService.submitDuty(this.singleDuty.familyId, this.singleDuty.dutyId, this.grading.gradingId).subscribe({
+            next: (res) => {
+                this.refreshData(this.singleDuty.familyId, this.singleDuty.dutyId)
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        })
+    }
+
+    getFormattedDate(dateToParse: string) {
+        return this._datePipe.transform(dateToParse, 'medium');
+    }
+
+
 }

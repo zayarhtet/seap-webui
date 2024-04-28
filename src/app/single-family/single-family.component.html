@@ -1,14 +1,16 @@
 <header class="pt-4">
     <div>
-        <button class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
-        (click)="goBack()">
+        <button
+            class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
+            (click)="goBack()"
+        >
             <p
-                class="pi pi-arrow-left text-md text-sky-500 font-bold px-4 group-hover:text-white "
+                class="pi pi-arrow-left text-md text-sky-500 font-bold px-4 group-hover:text-white"
             ></p>
         </button>
     </div>
     <div class="flex justify-center md:p-4 flex-col items-center gap-y-4">
-        <h1 class="text-2xl md:text-4xl tracking-wide font-semibold ">
+        <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
             {{ singleFamily.name }}
         </h1>
         <p>{{ singleFamily.info }}</p>
@@ -25,18 +27,18 @@
             class="flex justify-center sm:justify-end p-4 flex-row gap-x-4 gap-y-4 flex-wrap"
         >
             <button
-                class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
-                (click)="createNewDuty()"
+                class="hover:bg-red-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-red-500 group transition-all duration-300"
+                (click)="deleteFamily()"
                 *ngIf="isUserTutorInFamily"
-                title="grades"
+                title="delete family"
             >
                 <p
-                    class="pi pi-chart-bar text-sm sm:text-md group-hover:text-white text-sky-500"
+                    class="pi pi-trash text-sm sm:text-md group-hover:text-white text-red-500"
                 ></p>
                 <p
-                    class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
+                    class="text-sm sm:text-md group-hover:text-white tracking-wide text-red-500"
                 >
-                    grades
+                    delete
                 </p>
             </button>
             <button
@@ -73,22 +75,34 @@
     </div>
 </header>
 
-
-<div class="pt-4 flex flex-col gap-y-4 lg:mx-32" *ngIf="!isUserTutorInFamily; else elseBlock">
-    <div *ngIf="!isLoading && singleFamily.dutiesWithSubmission != null && singleFamily.dutiesWithSubmission.length == 0">
+<div
+    class="pt-4 flex flex-col gap-y-4 lg:mx-32"
+    *ngIf="!isUserTutorInFamily; else elseBlock"
+>
+    <div
+        *ngIf="
+            !isLoading &&
+            singleFamily.dutiesWithSubmission != null &&
+            singleFamily.dutiesWithSubmission.length == 0
+        "
+    >
         <div class="justify-center my-20 flex">
-            <h1 class="text-lg md:text-xl tracking-wide font-semibold ">There is no duties here.</h1>
+            <h1 class="text-lg md:text-xl tracking-wide font-semibold">
+                There is no duties here.
+            </h1>
         </div>
     </div>
     <div *ngIf="isLoading">
         <div class="justify-center my-20 flex">
-            <h1 class="text-lg md:text-xl tracking-wide font-semibold ">Loading...</h1>
+            <h1 class="text-lg md:text-xl tracking-wide font-semibold">
+                Loading...
+            </h1>
         </div>
     </div>
     <div *ngFor="let item of singleFamily.dutiesWithSubmission; index as i">
         <div
             class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"
-            (click)="openDuty(item.duty.duty_id)"
+            (click)="openDuty(item.duty.dutyId)"
         >
             <div class="">
                 <h1 class="font-bold text-gray-800">
@@ -100,19 +114,26 @@
                     <p
                         class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
                     >
-                        Published at <b>{{ item.duty.publishedAt }} </b>
+                        Published at
+                        <b>{{ getFormattedDate(item.duty.publishedAt) }} </b>
                     </p>
                     <p
                         class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
                     >
-                        Due at <b>{{ item.duty.dueDate }}</b>
+                        Due at <b>{{ getFormattedDate(item.duty.dueDate) }}</b>
                     </p>
                 </div>
             </div>
             <div>
                 <p
                     class="pi text-2xl font-bold px-4"
-                    [ngClass]="item.isSubmitted? 'pi-check  text-green-500': (hasDeadlinePassed?'pi-times text-red-500':'pi-exclamation-circle  text-yellow-500' )"
+                    [ngClass]="
+                        item.isSubmitted
+                            ? 'pi-check  text-green-500'
+                            : (hasDeadlinePassed(item)
+                            ? 'pi-times text-red-500'
+                            : 'pi-exclamation-circle  text-yellow-500')
+                    "
                 ></p>
             </div>
         </div>
@@ -121,15 +142,21 @@
 
 <ng-template #elseBlock>
     <div class="pt-4 flex flex-col gap-y-4 lg:mx-32">
-        <div *ngIf="singleFamily.duties != null && singleFamily.duties.length == 0">
+        <div
+            *ngIf="
+                singleFamily.duties != null && singleFamily.duties.length == 0
+            "
+        >
             <div class="justify-center my-20 flex">
-                <h1 class="text-lg md:text-xl tracking-wide font-semibold ">There is no duties here.</h1>
+                <h1 class="text-lg md:text-xl tracking-wide font-semibold">
+                    There is no duties here.
+                </h1>
             </div>
         </div>
         <div *ngFor="let item of singleFamily.duties; index as i">
             <div
                 class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"
-                (click)="openDuty(item.duty_id)"
+                (click)="openDuty(item.dutyId)"
             >
                 <div class="">
                     <h1 class="font-bold text-gray-800">

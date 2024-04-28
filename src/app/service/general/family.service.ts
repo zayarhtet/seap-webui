@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ENDPOINT } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root',
@@ -27,9 +28,16 @@ export class FamilyService {
     private _deleteSubmittedFileURL =
         ENDPOINT +
         'my/cdn/delete/family/:famId/duty/:dutyId/submitted-file/:fileId';
-    private _updateGradingURL = ENDPOINT + 'my/family/:famId/create/grade'
+    private _updateGradingURL = ENDPOINT + 'my/family/:famId/create/grade';
+    private _deleteFamilyURL = ENDPOINT + 'my/family/:famId';
+    private _deleteDutyURL = ENDPOINT + 'my/family/:famId/duty/:dutyId';
+    private _getMyGradingURL =
+        ENDPOINT + 'my/family/:famId/duty/:dutyId/my-grading';
 
-    constructor(private http: HttpClient) {}
+    private _submitDutyURL =
+        ENDPOINT + 'my/family/:famId/duty/:dutyId/submit/:gradingId/done';
+
+    constructor(private http: HttpClient, private _datePipe: DatePipe) {}
 
     getMyFamilies() {
         return this.http.get<any>(this._myFamiliesURL);
@@ -135,6 +143,39 @@ export class FamilyService {
         return this.http.post<any>(
             this._updateGradingURL.replace(':famId', famId),
             newGrade
+        );
+    }
+
+    deleteFamily(famId: string) {
+        return this.http.delete(this._deleteFamilyURL.replace(':famId', famId));
+    }
+
+    deleteDuty(famId: string, dutyId: string) {
+        return this.http.delete(
+            this._deleteDutyURL
+                .replace(':famId', famId)
+                .replace(':dutyId', dutyId)
+        );
+    }
+
+    getFormattedDate(dateToParse: string) {
+        return this._datePipe.transform(dateToParse, 'medium');
+    }
+
+    getGradingById(famId: string, dutyId: string) {
+        return this.http.get<any>(
+            this._getMyGradingURL
+                .replace(':famId', famId)
+                .replace(':dutyId', dutyId)
+        );
+    }
+
+    submitDuty(famId: string, dutyId: string, gradingId: string) {
+        return this.http.post(
+            this._submitDutyURL
+                .replace(':famId', famId)
+                .replace(':dutyId', dutyId)
+                .replace(':gradingId', gradingId), ""
         );
     }
 }

@@ -30,20 +30,20 @@
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
             Published at:
         </h1>
-        <p class="tracking-wide">{{ singleDuty.publishedAt }}</p>
+        <p class="tracking-wide">{{ getFormattedDate(singleDuty.publishedAt) }}</p>
     </div>
-    <div class="pt-8 flex flex-row flex-wrap gap-y-7 gap-x-20 sm:gap-x-28">
+    <div class="pt-8 grid grid-cols-1 sm:grid-cols-2 gap-y-7 gap-x-20 sm:gap-x-28">
         <div class="flex flex-col gap-y-2">
             <h1 class="text-sm md:text-md font-semibold tracking-wide">
                 Due Date:
             </h1>
-            <p class="tracking-wide">{{ singleDuty.dueDate }}</p>
+            <p class="tracking-wide">{{ getFormattedDate(singleDuty.dueDate) }}</p>
         </div>
         <div class="flex flex-col gap-y-2">
             <h1 class="text-sm md:text-md font-semibold tracking-wide">
                 Closing at:
             </h1>
-            <p class="tracking-wide">{{ singleDuty.closingDate }}</p>
+            <p class="tracking-wide">{{ getFormattedDate(singleDuty.closingDate) }}</p>
         </div>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
@@ -90,13 +90,25 @@
             }}
         </p>
     </div>
-    <div class="pt-8 flex flex-col gap-y-2">
-        <h1 class="text-sm md:text-md font-semibold tracking-wide">
-            Your points:
-        </h1>
-        <p class="tracking-wide">
-            {{ singleDuty.isPointSystem ? singleDuty.totalPoints : "Pass" }}
-        </p>
+    <div class="pt-8 grid grid-cols-1 sm:grid-cols-2">
+        <div class="flex flex-col gap-y-2">
+
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                Your points:
+            </h1>
+            <p class="tracking-wide">
+                {{ grading.hasGraded? (singleDuty.isPointSystem ? grading.points : "Pass"): ("?") }}
+            </p>
+        </div>
+        <div class=" flex flex-col gap-y-2">
+
+            <h1 class="text-sm md:text-md font-semibold tracking-wide">
+                grade comment
+            </h1>
+            <p class="tracking-wide">
+                {{ grading.hasGraded && grading.gradeComment.length != 0? grading.gradeComment: "--" }}
+            </p>
+        </div>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
@@ -135,7 +147,7 @@
                                     )
                                 "
                             ></p>
-                            <p
+                            <p *ngIf="!expired"
                                 class="pi pi-times py-2 h-full px-4 hover:bg-sky-500 hover:text-white transition-all duration-300"
                                 (click)="
                                     deleteSubmittedFile(
@@ -154,6 +166,7 @@
     <form
         class="pt-8 flex flex-row flex-wrap gap-x-20 sm:gap-x-28 gap-y-7"
         (ngSubmit)="uploadFiles(filesElement2)"
+        *ngIf="!expired"
     >
         <input
             #filesElement2
@@ -203,9 +216,11 @@
         </p>
     </div>
     <div class="pt-8">
-        <p class="">*Multiple submission is not possible!</p>
+        <!-- <p class="">*Multiple submission is not possible!</p> -->
+        <p class="text-red-500 font-bold" *ngIf="expired && !grading.isSubmitted">*no submission</p>
     </div>
-    <div class="pt-8 flex justify-center">
+    <div class="pt-8 flex justify-center"
+    *ngIf="!expired">
         <button
             class="hover:bg-sky-500 w-full justify-center px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
             type="submit"

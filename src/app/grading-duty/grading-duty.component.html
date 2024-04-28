@@ -90,9 +90,16 @@
                         class="flex flex-row items-center gap-x-2 border-2 border-sky-500 group-hover:bg-sky-500 p-1 rounded-md transition-all duration-300"
                     >
                         <!-- <p class="text-md">details</p> -->
-                        <p
-                            class="pi pi-angle-down group-hover:text-white transition-all duration-300"
+                        <p class="pi group-hover:text-white transition-all duration-300 font-bold"
+                            [ngClass]="
+                                item.isSubmitted
+                                    ? 'pi-check text-green-500'
+                                    : 'pi-times text-red-500'
+                            "
                         ></p>
+                        <p
+                        class="pi pi-angle-down group-hover:text-white transition-all duration-300"
+                    ></p>
                     </button>
                 </div>
             </div>

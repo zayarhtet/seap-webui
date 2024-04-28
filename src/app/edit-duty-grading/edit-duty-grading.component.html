@@ -12,9 +12,26 @@
 </header>
 
 <div *ngIf="isUserTutorInFamily" class="lg:mx-32 pt-4">
-    <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
-        {{ singleDuty.title }}
-    </h1>
+    <div class="flex flex-row justify-between flex-wrap gap-y-8  gap-x-2">
+        <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
+            {{ singleDuty.title }}
+        </h1>
+        <button
+        class="hover:bg-red-500 px-2 py-1 sm:px-3 sm:py-2 rounded-md sm:rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-red-500 group transition-all duration-300"
+        (click)="deleteDuty()"
+        *ngIf="isUserTutorInFamily"
+        title="delete family"
+    >
+        <p
+            class="pi pi-trash text-sm sm:text-md group-hover:text-white text-red-500"
+        ></p>
+        <p
+            class="text-sm sm:text-md group-hover:text-white tracking-wide text-red-500"
+        >
+            delete
+        </p>
+    </button>
+    </div>
     <div class="pt-8">
         <h1 class="border-l-4 border-sky-500 pl-2 text-lg">
             {{ singleDuty.family == null ? "" : singleDuty.family.name }}
@@ -30,20 +47,20 @@
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
             Published at:
         </h1>
-        <p class="tracking-wide">{{ singleDuty.publishedAt }}</p>
+        <p class="tracking-wide">{{ getFormattedDate(singleDuty.publishedAt) }}</p>
     </div>
     <div class="pt-8 flex flex-row flex-wrap gap-y-7 gap-x-20 sm:gap-x-28">
         <div class="flex flex-col gap-y-2">
             <h1 class="text-sm md:text-md font-semibold tracking-wide">
                 Due Date:
             </h1>
-            <p class="tracking-wide">{{ singleDuty.dueDate }}</p>
+            <p class="tracking-wide">{{ getFormattedDate(singleDuty.dueDate) }}</p>
         </div>
         <div class="flex flex-col gap-y-2">
             <h1 class="text-sm md:text-md font-semibold tracking-wide">
                 Closing at:
             </h1>
-            <p class="tracking-wide">{{ singleDuty.closingDate }}</p>
+            <p class="tracking-wide">{{ getFormattedDate(singleDuty.closingDate) }}</p>
         </div>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">

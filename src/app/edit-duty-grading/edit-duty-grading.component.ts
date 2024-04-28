@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FamilyService } from '../service/general/family.service';
 import { firstValueFrom } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-duty-grading',
-  templateUrl: './edit-duty-grading.component.html',
-  styleUrl: './edit-duty-grading.component.scss'
+    selector: 'app-edit-duty-grading',
+    templateUrl: './edit-duty-grading.component.html',
+    styleUrl: './edit-duty-grading.component.scss',
 })
-
 export class EditDutyGradingComponent implements OnInit {
     isMultiple = false;
 
@@ -57,17 +57,18 @@ export class EditDutyGradingComponent implements OnInit {
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
-        private _familyService: FamilyService
+        private _familyService: FamilyService,
+        private _datePipe: DatePipe,
     ) {}
 
     ngOnInit(): void {
-        if (this._route.parent == null) return
+        if (this._route.parent == null) return;
         this._route.parent.paramMap.subscribe(async (p: ParamMap) => {
             this.refreshData(p.get('famId'), p.get('dutyId'));
             let tutor = await this.isTutorInFamily(p.get('famId'));
             if (tutor != null) {
                 this.isUserTutorInFamily = tutor;
-                if (!tutor) this.goBack()
+                if (!tutor) this.goBack();
             }
         });
     }
@@ -136,5 +137,24 @@ export class EditDutyGradingComponent implements OnInit {
                 console.log(err);
             },
         });
+    }
+
+    deleteDuty() {
+        if (confirm('Are you sure to delete this DUTY?')) {
+            this._familyService
+                .deleteDuty(this.singleDuty.familyId, this.singleDuty.dutyId)
+                .subscribe({
+                    next: (res) => {
+                        this.goBack();
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    },
+                });
+        }
+    }
+
+    getFormattedDate(dateToParse: string) {
+        return this._datePipe.transform(dateToParse, 'medium');
     }
 }

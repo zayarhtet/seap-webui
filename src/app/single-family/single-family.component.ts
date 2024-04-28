@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FamilyService } from '../service/general/family.service';
 import { firstValueFrom } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-single-family',
@@ -18,7 +19,7 @@ export class SingleFamilyComponent implements OnInit {
     //     icon: '/fp.png',
     //     duties: [
     //         {
-    //             duty_id: '44062536-0d5c-422d-9dd2-b4b03fb7b3df',
+    //             dutyId: '44062536-0d5c-422d-9dd2-b4b03fb7b3df',
     //             title: 'PT1',
     //             publishedAt: '2024-03-16T14:30:45+01:00',
     //             dueDate: '2024-03-17T14:30:45+01:00',
@@ -28,7 +29,7 @@ export class SingleFamilyComponent implements OnInit {
     //     dutiesWithSubmission: [
     //         {
     //             duty: {
-    //                 duty_id: 'cd8cc9bb-0724-424d-bd94-999195e3cc84',
+    //                 dutyId: 'cd8cc9bb-0724-424d-bd94-999195e3cc84',
     //                 title: 'HW1',
     //                 publishedAt: '2024-03-16T14:30:45+01:00',
     //                 dueDate: '2024-03-17T14:30:45+01:00',
@@ -44,13 +45,11 @@ export class SingleFamilyComponent implements OnInit {
 
     isUserTutorInFamily = false;
 
-    hasDeadlinePassed = false;
-
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
-        private _location: Location,
-        private _familyService: FamilyService
+        private _familyService: FamilyService,
+        private _datePipe: DatePipe
     ) {}
 
     ngOnInit(): void {
@@ -87,6 +86,7 @@ export class SingleFamilyComponent implements OnInit {
     }
 
     openDuty(id: string) {
+        console.log(id);
         this._router.navigate(['duty/' + id], {
             skipLocationChange: false,
             relativeTo: this._route,
@@ -112,13 +112,37 @@ export class SingleFamilyComponent implements OnInit {
             next: (res) => {
                 if (res.data.length > 0) {
                     this.singleFamily = res.data[0];
-                    this.isLoading = false
+                    this.isLoading = false;
+                    // this.hasDeadlinePassed = res.
                 }
             },
             error: (err) => {
-                this.isLoading = false
+                this.isLoading = false;
                 console.log(err);
             },
         });
+    }
+
+    deleteFamily() {
+        if (confirm('Are you sure to delete this family?')) {
+            this._familyService
+                .deleteFamily(this.singleFamily.familyId)
+                .subscribe({
+                    next: (res) => {
+                        this.goBack();
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    },
+                });
+        }
+    }
+
+    getFormattedDate(dateToParse: string) {
+        return this._datePipe.transform(dateToParse, 'medium');
+    }
+
+    hasDeadlinePassed(item: any) :boolean {
+        return new Date(item.duty.dueDate) < new Date()
     }
 }

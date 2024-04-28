@@ -42,6 +42,7 @@ import { FamilyContainerComponent } from './family-container/family-container.co
 import { SingleFamilyContainerComponent } from './single-family-container/single-family-container.component';
 import { EditDutyGradingComponent } from './edit-duty-grading/edit-duty-grading.component';
 import { SingleDutyContainerComponent } from './single-duty-container/single-duty-container.component';
+import { DatePipe } from '@angular/common';
 // import { HttpErrorInterceptorService } from './service/general/http-error-interceptor.service';
 // import { SingleDutyContainerComponent } from './single-duty-container/single-duty-container.component';
 
@@ -87,6 +88,7 @@ import { SingleDutyContainerComponent } from './single-duty-container/single-dut
     providers: [
         provideRouter(routes),
         AuthService,
+        DatePipe,
         FamilyService,
         {
             provide: HTTP_INTERCEPTORS,
