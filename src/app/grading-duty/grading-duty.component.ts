@@ -41,6 +41,10 @@ export class GradingDutyComponent implements OnInit {
     //     },
     // ];
 
+    dutyId = ""
+    famId = ""
+    message = ""
+
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
@@ -53,7 +57,29 @@ export class GradingDutyComponent implements OnInit {
         });
     }
 
-    triggerExecution() {}
+    triggerExecution() {
+        if (this.famId == null || this.dutyId == null) return
+        if (this.famId.length == 0 ||  this.dutyId.length == 0) return
+        this._familyService.executePlugin(this.famId, this.dutyId).subscribe({
+            next: (res) => {
+                this.message = "Executing... Refresh the page."
+            }, error: (err) => {
+                this.message = "execution already in queue."
+                console.log(err)}
+        })
+    }
+
+    viewReport() {
+        if (this.famId == null || this.dutyId == null) return
+        if (this.famId.length == 0 ||  this.dutyId.length == 0) return
+        this._familyService.getExecutionReport(this.famId, this.dutyId).subscribe({
+            next: (res) => {
+                this.message = "will open"
+            }, error: (err) => {
+                this.message = "no report found."
+                console.log(err)}
+        })
+    }
 
     viewDuty() {
         this._router.navigate(['grading'], {relativeTo: this._route})
@@ -69,6 +95,10 @@ export class GradingDutyComponent implements OnInit {
         this._familyService.getGradingByDutyId(famId,dutyId).subscribe({
             next: (res) => {
                 this.grading = res.data
+                if (this.grading.length != 0) {
+                    this.dutyId = this.grading[0].dutyId
+                    this.famId = this.grading[0].familyId
+                }
             },
             error: (err) => {
                 console.log(err)

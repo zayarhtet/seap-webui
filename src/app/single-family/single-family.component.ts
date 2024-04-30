@@ -146,6 +146,9 @@ export class SingleFamilyComponent implements OnInit {
     }
 
     hasPublished(datestring: string) {
+        console.log(new Date())
+        console.log(datestring)
+        console.log(new Date(datestring))
         return new Date() > new Date(datestring)
     }
 }

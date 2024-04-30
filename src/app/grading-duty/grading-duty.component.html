@@ -4,6 +4,9 @@
     </h1>
     <p>{{ familyName }}</p>
 </div>
+<div class="lg:mx-32 flex items-center pt-4 px-4 justify-end" *ngIf="message.length != 0">
+    <span class="font-semibold tracking-wide text-sm text-red-500">{{message}}</span>
+</div>
 <div
     class="lg:mx-32 flex flex-row flex-wrap justify-center sm:justify-between items-center"
 >
@@ -27,6 +30,20 @@
                 class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
             >
                 view duty
+            </p>
+        </button>
+        <button
+            class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
+            (click)="viewReport()"
+            title="grades"
+        >
+            <p
+                class="pi pi-file-pdf text-sm sm:text-md group-hover:text-white text-sky-500"
+            ></p>
+            <p
+                class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
+            >
+                analysis
             </p>
         </button>
         <button

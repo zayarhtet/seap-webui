@@ -40,10 +40,29 @@ export class FamilyService {
     private _submitDutyURL =
         ENDPOINT + 'my/family/:famId/duty/:dutyId/submit/:gradingId/done';
 
+    private _executionURL = ENDPOINT + 'my/execute/family/:famId/duty/:dutyId';
+    private _reportURL = ENDPOINT + 'my/cdn/download/family/:famId/duty/:dutyId/report';
+
     constructor(private http: HttpClient, private _datePipe: DatePipe) {}
 
+    executePlugin(famId: string, dutyId: string) {
+        return this.http.post<any>(
+            this._executionURL
+                .replace(':famId', famId)
+                .replace(':dutyId', dutyId),
+        ''
+        );
+    }
+
+    getExecutionReport(famId: string, dutyId: string) {
+        return this.http.get<any>(
+            this._executionURL
+                .replace(':famId', famId)
+                .replace(':dutyId', dutyId),
+        );
+    }
     getMyProfile() {
-        return this.http.get<any>(this._myProfileURL)
+        return this.http.get<any>(this._myProfileURL);
     }
 
     getMyFamilies() {
@@ -193,7 +212,8 @@ export class FamilyService {
             this._submitDutyURL
                 .replace(':famId', famId)
                 .replace(':dutyId', dutyId)
-                .replace(':gradingId', gradingId), ""
+                .replace(':gradingId', gradingId),
+            ''
         );
     }
 }

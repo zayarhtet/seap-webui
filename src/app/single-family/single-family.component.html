@@ -181,10 +181,10 @@
                 <div>
                     <p
                         class="font-bold tracking-wide text-sm  px-4 "
-                        [ngClass]="hasPublished(item.publishAt) ? 'text-green-600' : 'text-yellow-600'"
+                        [ngClass]="hasPublished(item.publishedAt) ? 'text-green-500' : 'text-yellow-600'"
                     >
                         {{
-                            hasPublished(item.publishAt)
+                            hasPublished(item.publishedAt)
                                 ? "published"
                                 : "not yet published"
                         }}
