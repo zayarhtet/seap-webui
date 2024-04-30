@@ -54,10 +54,9 @@ export class CreateNewFamilyComponent implements OnInit {
                     this._router.navigate(['..', res.data[0].familyId], {
                         relativeTo: this._route,
                     });
-                    // console.log(this.singleDuty)
                 }
             },
-            error: (err) => {},
+            error: (err) => {console.log(err)},
         });
     }
 

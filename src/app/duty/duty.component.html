@@ -1,4 +1,21 @@
+<div
+        class="lg:mx-32 flex flex-row flex-wrap justify-center sm:justify-between items-center pt-4"
+    >
+        <div class="p-2">
+            <h1 class="text-xl tracking-wide font-semibold md:text-2xl">
+                Duties...
+            </h1>
+        </div>
+</div>
+<div *ngIf="duties == null || duties.length == 0">
+    <div class="justify-center my-20 flex">
+        <h1 class="text-xl md:text-2xl tracking-wide font-semibold">
+            There is no duty here.
+        </h1>
+    </div>
+</div>
 <div class="pt-4 flex flex-col gap-y-4 lg:mx-32">
+
     <div *ngFor="let item of duties; index as i">
         <div
             class="flex flex-row items-center justify-between rounded-md border-2 border-sky-500 p-4 hover:-translate-y-1 group transition-all duration-300 hover:bg-sky-200 bg-white cursor-pointer"

@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 })
 export class FamilyService {
     private _myFamiliesURL = ENDPOINT + 'my/families';
+    private _myProfileURL = ENDPOINT + 'my/member';
     private _myRoleURL = ENDPOINT + 'my/role';
     private _myDutiesByFamilyURL = ENDPOINT + 'my/family/:famId/duties';
     private _membersByFamilyURL = ENDPOINT + 'my/family/:famId/members';
@@ -40,6 +41,10 @@ export class FamilyService {
         ENDPOINT + 'my/family/:famId/duty/:dutyId/submit/:gradingId/done';
 
     constructor(private http: HttpClient, private _datePipe: DatePipe) {}
+
+    getMyProfile() {
+        return this.http.get<any>(this._myProfileURL)
+    }
 
     getMyFamilies() {
         return this.http.get<any>(this._myFamiliesURL);
