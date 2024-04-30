@@ -59,8 +59,6 @@ export class NewGradingComponent implements OnInit {
     }
 
     submitGrade() {
-        console.log( this.grading.familyId)
-        console.log(this.newGrade)
         this._familyService.updateGrading(this.grading.familyId, this.newGrade).subscribe({
             next: (res) => {
                 console.log(res)
@@ -78,5 +76,5 @@ export class NewGradingComponent implements OnInit {
         console.log("cancelled grade")
         this.cancelled.emit()
     }
-    
+
 }

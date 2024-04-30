@@ -66,6 +66,8 @@ export class FamilyComponent implements OnInit {
         });
     }
 
+    familyIcon = ""
+
     refreshData() {
         this._familyService.getMyFamilies().subscribe({
             next: (res) => {
@@ -75,7 +77,7 @@ export class FamilyComponent implements OnInit {
                     this._familyService.getMyFamilyIcon(family.families.familyId).subscribe({
                         next:(data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'image/*' });
-                            family.families.icon = URL.createObjectURL(blob);
+                            this.familyIcon = URL.createObjectURL(blob);
                         },
                         error: (err) => {
                             // console.log(family.families.familyId)

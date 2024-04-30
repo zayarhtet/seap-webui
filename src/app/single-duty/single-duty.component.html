@@ -24,7 +24,7 @@
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
             Instruction:
         </h1>
-        <p class="tracking-wide">{{ singleDuty.instruction }}</p>
+        <p class="tracking-wide">{{ singleDuty.instruction != null && singleDuty.instruction.length == 0? '--':singleDuty.instruction }}</p>
     </div>
     <div class="pt-8 flex flex-col gap-y-2">
         <h1 class="text-sm md:text-md font-semibold tracking-wide">
@@ -97,7 +97,7 @@
                 Your points:
             </h1>
             <p class="tracking-wide">
-                {{ grading.hasGraded? (singleDuty.isPointSystem ? grading.points : "Pass"): ("?") }}
+                {{ grading.hasGraded? (singleDuty.isPointSystem ? grading.points : "Pass"): ("--") }}
             </p>
         </div>
         <div class=" flex flex-col gap-y-2">

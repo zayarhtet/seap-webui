@@ -1,4 +1,4 @@
-<header class="">
+<header class="pt-4">
     <div>
         <button
             class="py-2 mb-2 bg-white rounded-full border-2 border-sky-500 group hover:bg-sky-500 transition-all duration-300"
@@ -9,6 +9,90 @@
             ></p>
         </button>
     </div>
+    <div class="flex justify-center md:p-4 flex-col items-center gap-y-4">
+        <h1 class="text-2xl md:text-4xl tracking-wide font-semibold">
+            {{ family.name }}
+        </h1>
+        <p>{{ family.info }}</p>
+    </div>
+    <div class="lg:mx-32 flex items-center pt-4 px-4 justify-end" *ngIf="message.length != 0">
+        <span class="font-semibold tracking-wide text-sm text-red-500">{{message}}</span>
+    </div>
+    <div
+        class="lg:mx-32 flex flex-row flex-wrap justify-center sm:justify-between items-center"
+    >
+        <div class="p-2">
+            <h1 class="text-xl tracking-wide font-semibold md:text-2xl">
+                Members...
+            </h1>
+        </div>
+        <form
+            (ngSubmit)="addMember()"
+            (change)="clearMessage()"
+            class="flex justify-center sm:justify-end p-4 flex-row gap-x-4 gap-y-4 flex-wrap"
+        >
+            <input
+                type="text"
+                name="username"
+                id="username"
+                [(ngModel)]="newMember.username"
+                class="border-sky-500 border-2 px-3 py-1 rounded-md focus:outline-none focus:shadow-sky-500/20 focus:shadow-md"
+                placeholder="Enter username to add"
+                required
+            />
+            <select
+                name="point"
+                id="point"
+                [(ngModel)]="newMember.roleId"
+                name="point"
+                class="px-3 py-1 rounded-md border-2 border-sky-500 focus:outline-none tracking-wide"
+            >
+                <option value="1" class="p-8">tutor</option>
+                <option value="2" class="p-8">tutee</option>
+            </select>
+            <button
+                class="hover:bg-sky-500 px-2 py-1 rounded-md flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
+                title="add member"
+                type="submit"
+            >
+                <p
+                    class="pi pi-plus text-sm group-hover:text-white text-sky-500"
+                ></p>
+                <p
+                    class="text-sm group-hover:text-white tracking-wide text-sky-500"
+                >
+                    add
+                </p>
+            </button>
+        </form>
+    </div>
 </header>
 
-<p>family-member works!</p>
+<div
+    class="flex flex-col lg:mx-32 rounded-md bg-white divide-y-2 divide-sky-500 border-2 border-sky-500"
+>
+    <div class="grid grid-cols-3 tracking-wide px-4 bg-sky-500 text-white">
+        <div class="flex flex-col py-3 px-4 justify-center">
+            <p>name</p>
+        </div>
+        <div class="flex items-center">
+            <p>role</p>
+        </div>
+        <div class="flex py-3 px-4 items-center justify-end">
+            <p>added at</p>
+        </div>
+    </div>
+    <div *ngFor="let item of family.members">
+        <div class="grid grid-cols-3 tracking-wide capitalize px-4 text-sm font-semibold hover:bg-sky-200 transition-all">
+            <div class="flex flex-col p-4 justify-center">
+                <p>{{ item.member.firstName + " " + item.member.lastName }}</p>
+            </div>
+            <div class="flex items-center">
+                <p>{{ item.familyRole.name }}</p>
+            </div>
+            <div class="flex p-4 items-center justify-end">
+                <p>{{ getFormattedDate(item.addedAt) }}</p>
+            </div>
+        </div>
+    </div>
+</div>

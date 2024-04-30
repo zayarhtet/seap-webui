@@ -86,7 +86,6 @@ export class SingleFamilyComponent implements OnInit {
     }
 
     openDuty(id: string) {
-        console.log(id);
         this._router.navigate(['duty/' + id], {
             skipLocationChange: false,
             relativeTo: this._route,
@@ -144,5 +143,9 @@ export class SingleFamilyComponent implements OnInit {
 
     hasDeadlinePassed(item: any) :boolean {
         return new Date(item.duty.dueDate) < new Date()
+    }
+
+    hasPublished(datestring: string) {
+        return new Date() > new Date(datestring)
     }
 }

@@ -54,7 +54,6 @@ export class AuthService {
     }
 
     deleteToken() {
-        console.log('deleted');
         sessionStorage.removeItem('token');
     }
 }

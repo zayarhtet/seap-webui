@@ -23,8 +23,11 @@ export class MainComponent implements OnInit {
     ngOnInit(): void {}
 
     logout() {
-        this._authService.deleteToken()
-        this._router.navigate(['login'])
+        if (confirm("Do you want to logout?")) {
+
+            this._authService.deleteToken()
+            this._router.navigate(['login'])
+        }
     }
 
     toggleMenu() {

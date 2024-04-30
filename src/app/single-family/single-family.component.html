@@ -130,9 +130,9 @@
                     [ngClass]="
                         item.isSubmitted
                             ? 'pi-check  text-green-500'
-                            : (hasDeadlinePassed(item)
+                            : hasDeadlinePassed(item)
                             ? 'pi-times text-red-500'
-                            : 'pi-exclamation-circle  text-yellow-500')
+                            : 'pi-exclamation-circle  text-yellow-500'
                     "
                 ></p>
             </div>
@@ -168,14 +168,27 @@
                         <p
                             class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
                         >
-                            Published at <b>{{ item.publishedAt }} </b>
+                            Published at
+                            <b>{{ getFormattedDate(item.publishedAt) }} </b>
                         </p>
                         <p
                             class="text-sm text-gray-500 tracking-wide group-hover:text-gray-800"
                         >
-                            Due at <b>{{ item.dueDate }}</b>
+                            Due at <b>{{ getFormattedDate(item.dueDate) }}</b>
                         </p>
                     </div>
+                </div>
+                <div>
+                    <p
+                        class="font-bold tracking-wide text-sm  px-4 "
+                        [ngClass]="hasPublished(item.publishAt) ? 'text-green-600' : 'text-yellow-600'"
+                    >
+                        {{
+                            hasPublished(item.publishAt)
+                                ? "published"
+                                : "not yet published"
+                        }}
+                    </p>
                 </div>
             </div>
         </div>

@@ -10,6 +10,8 @@ export class FamilyService {
     private _myFamiliesURL = ENDPOINT + 'my/families';
     private _myRoleURL = ENDPOINT + 'my/role';
     private _myDutiesByFamilyURL = ENDPOINT + 'my/family/:famId/duties';
+    private _membersByFamilyURL = ENDPOINT + 'my/family/:famId/members';
+    private _addMemberFamilyURL = ENDPOINT + 'my/family/:famId/addMember';
     private _myRoleInFamURL = ENDPOINT + 'my/family/:famId/myrole';
     private _dutyById = ENDPOINT + 'my/family/:famId/duty/:dutyId';
     private _gradingByIds = ENDPOINT + 'my/family/:famId/duty/:dutyId/grading';
@@ -56,6 +58,11 @@ export class FamilyService {
             this._myDutiesByFamilyURL.replace(':famId', famId)
         );
     }
+    getMyMembersByFamily(famId: string) {
+        return this.http.get<any>(
+            this._membersByFamilyURL.replace(':famId', famId)
+        );
+    }
 
     getMyRoleInFamily(famId: string) {
         return this.http.get<any>(
@@ -81,6 +88,12 @@ export class FamilyService {
         return this.http.post<any>(
             this._newDutyURL.replace(':famId', famId),
             newDuty
+        );
+    }
+    addNewMember(famId: string, newMember: any) {
+        return this.http.post<any>(
+            this._addMemberFamilyURL.replace(':famId', famId),
+            newMember
         );
     }
 

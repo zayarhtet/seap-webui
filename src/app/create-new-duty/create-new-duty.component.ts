@@ -117,7 +117,6 @@ export class CreateNewDutyComponent implements OnInit {
                 '*close date cannot be earlier than the due date.';
         }
 
-        console.log(this.newDuty);
         if (this.newDuty.familyId == null) {
             this.errorMessage = 'unknown family';
             return;
