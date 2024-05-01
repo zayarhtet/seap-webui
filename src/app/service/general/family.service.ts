@@ -41,7 +41,7 @@ export class FamilyService {
         ENDPOINT + 'my/family/:famId/duty/:dutyId/submit/:gradingId/done';
 
     private _executionURL = ENDPOINT + 'my/execute/family/:famId/duty/:dutyId';
-    private _reportURL = ENDPOINT + 'my/cdn/download/family/:famId/duty/:dutyId/report';
+    private _reportURL = ENDPOINT + 'my/cdn/html/family/:famId/grading/:gradingId/report';
 
     constructor(private http: HttpClient, private _datePipe: DatePipe) {}
 
@@ -54,11 +54,11 @@ export class FamilyService {
         );
     }
 
-    getExecutionReport(famId: string, dutyId: string) {
-        return this.http.get<any>(
-            this._executionURL
+    getExecutionReport(famId: string, gradingId: string) {
+        return this.http.get(
+            this._reportURL
                 .replace(':famId', famId)
-                .replace(':dutyId', dutyId),
+                .replace(':gradingId', gradingId), {responseType: 'text'}
         );
     }
     getMyProfile() {

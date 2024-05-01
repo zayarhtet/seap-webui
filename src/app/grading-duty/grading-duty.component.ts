@@ -98,6 +98,17 @@ export class GradingDutyComponent implements OnInit {
                 if (this.grading.length != 0) {
                     this.dutyId = this.grading[0].dutyId
                     this.famId = this.grading[0].familyId
+                    this.grading.forEach((grade) => {
+                        this._familyService.getExecutionReport(grade.familyId, grade.gradingId).subscribe({
+                            next:(res) => {
+                                grade.innerReport = res
+                            },
+                            error: (err) => {
+                                console.log(err)
+                                grade.innerReport = ""
+                            }
+                        })
+                    })
                 }
             },
             error: (err) => {

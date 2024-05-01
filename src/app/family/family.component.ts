@@ -77,7 +77,7 @@ export class FamilyComponent implements OnInit {
                     this._familyService.getMyFamilyIcon(family.families.familyId).subscribe({
                         next:(data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'image/*' });
-                            this.familyIcon = URL.createObjectURL(blob);
+                            family.families.familyIcon = URL.createObjectURL(blob);
                         },
                         error: (err) => {
                             // console.log(family.families.familyId)
