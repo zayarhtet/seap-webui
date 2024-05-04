@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
+import { environment } from './../../../environments/environment';
 
-export const ENDPOINT = 'http://172.21.215.221:8000/api/';
+export const ENDPOINT = environment.apiUrl;
 
 @Injectable({
     providedIn: 'root',
