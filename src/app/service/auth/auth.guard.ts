@@ -27,7 +27,6 @@ export const AfterLoggedinGuard: CanActivateFn = async (route, state) => {
     const router = inject(Router)
 
     if (await authService.isLoggedIn() && route.url.find(x => Object.values(pathBeforeLogin).includes(x.path)) != null ) {
-        // console.log("loggedin logged in " + route.url[0].path)
         return router.createUrlTree(['/main'])
     }
     return true;

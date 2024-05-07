@@ -40,15 +40,18 @@
         <button
             class="hover:bg-sky-500 px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex flex-row items-center gap-x-2 bg-white border-2 border border-sky-500 group transition-all duration-300"
             (click)="viewReport()"
-            title="grades"
+            title="download as zip"
         >
             <p
-                class="pi pi-file-pdf text-sm sm:text-md group-hover:text-white text-sky-500"
+                class="pi pi-folder text-sm sm:text-md group-hover:text-white text-sky-500"
+            ></p>
+            <p
+                class="pi pi-download text-sm sm:text-md group-hover:text-white text-sky-500"
             ></p>
             <p
                 class="text-sm sm:text-md group-hover:text-white tracking-wide text-sky-500"
             >
-                analysis
+                .zip
             </p>
         </button>
         <button
@@ -222,7 +225,7 @@
                 </div>
                 <div
                     class="mt-4 border-t-2 border-sky-500 py-4"
-                    *ngIf="item.innerReport.length != 0"
+                    *ngIf="item.innerReport != null && item.innerReport.length != 0"
                     [innerHTML]="item.innerReport"
                 ></div>
             </div>

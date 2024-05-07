@@ -19,6 +19,7 @@
         class="py-4 md:px-4 flex flex-col gap-y-6"
         action=""
         (ngSubmit)="createNewFamily()"
+        (change)="removeErrorMessage()"
     >
         <div class="flex flex-col gap-y-4">
             <h1 class="text-sm md:text-md font-semibold tracking-wide">
@@ -62,6 +63,9 @@
                 />
             </div>
         </div>
+        <h1 class="text-sm md:text-md tracking-wide text-red-500 font-semibold" *ngIf="errorMessage.length != 0">
+            {{ errorMessage }}
+        </h1>
         <div class="flex flex-row flex-wrap justify-around gap-x-5 gap-y-4 border-t-2 border-sky-500 py-6">
             <button
                 class="hover:bg-red-500 px-2 py-1 sm:px-2 sm:py-1 rounded-md flex flex-row items-center gap-x-2 bg-white border-2 border border-red-500 group transition-all duration-300 w-fit"

@@ -42,7 +42,7 @@ export class FamilyService {
 
     private _executionURL = ENDPOINT + 'my/execute/family/:famId/duty/:dutyId';
     private _reportURL = ENDPOINT + 'my/cdn/html/family/:famId/grading/:gradingId/report';
-
+    private _getPluginURL = ENDPOINT + 'my/execute/family/:famId/plugins'
     constructor(private http: HttpClient, private _datePipe: DatePipe) {}
 
     executePlugin(famId: string, dutyId: string) {
@@ -52,6 +52,10 @@ export class FamilyService {
                 .replace(':dutyId', dutyId),
         ''
         );
+    }
+
+    getPluginList(famId: string) {
+        return this.http.get<any>(this._getPluginURL.replace(':famId', famId))
     }
 
     getExecutionReport(famId: string, gradingId: string) {

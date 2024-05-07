@@ -13,6 +13,7 @@ interface duty {
     totalPoints: number;
     isPointSystem: boolean;
     familyId: string | null;
+    pluginName: string;
     multipleSubmission: boolean;
 }
 
@@ -35,9 +36,12 @@ export class CreateNewDutyComponent implements OnInit {
         totalPoints: 0,
         isPointSystem: false,
         familyId: '',
+        pluginName: '',
         multipleSubmission: false,
     };
     files: File[] = [];
+    inputFiles: File[] = [];
+    plugins: string[] = []
 
     constructor(
         private _router: Router,
@@ -50,8 +54,21 @@ export class CreateNewDutyComponent implements OnInit {
         if (this._route.parent == null) return;
         this._route.parent.paramMap.subscribe((p: ParamMap) => {
             this.newDuty.familyId = p.get('famId');
+            this.refreshData(this.newDuty.familyId)
         });
         this.todayDateTime = formatDate(new Date(), 'yyyy-MM-ddTHH:mm', 'en');
+    }
+
+    refreshData(familyId: string | null) {
+        if (familyId == null) {return}
+
+        this._familyService.getPluginList(familyId).subscribe({
+            next: (res) => {
+                this.plugins = res.data;
+            },
+            error: (err) => {console.log(err)}
+        })
+
     }
 
     goBack() {
@@ -77,9 +94,27 @@ export class CreateNewDutyComponent implements OnInit {
         // this.files.push(...event.target.files);
     }
 
+    changeInputFiles(event: any, filesElement2:any) {
+        this.fileErrorMessage = ''
+        Array.from(event.target.files).forEach((file: any) => {
+            const hasExisted = this.inputFiles.some((storedFile) => storedFile.name == file.name);
+            if (!hasExisted) {
+                this.inputFiles.push(file)
+            } else {
+                this.fileErrorMessage = "*Cannot upload files with the same name: " + file.name
+            }
+        });
+        filesElement2.value = ""
+        // this.files.push(...event.target.files);
+    }
+
     removeFromFiles(index: number) {
         this.fileErrorMessage = ''
         this.files.splice(index, 1);
+    }
+    removeFromInputFiles(index: number) {
+        this.fileErrorMessage = ''
+        this.inputFiles.splice(index, 1);
     }
 
     createNewDuty() {
@@ -132,6 +167,9 @@ export class CreateNewDutyComponent implements OnInit {
                     const formData = new FormData()
                     this.files.forEach(f => {
                         formData.append('files', f)
+                    })
+                    this.inputFiles.forEach(f => {
+                        formData.append('input-files', f)
                     })
                     this._familyService.uploadGivenFiles(res.dutyId, formData).subscribe(
                         {

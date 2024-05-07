@@ -60,22 +60,10 @@ export class CreateNewFamilyComponent implements OnInit {
         });
     }
 
-    uploadFiles(filesElement: HTMLInputElement) {
-        // Check whether the files array is not undefined
-        // if (this.files) {
-        //     // this.uploadService.uploadFile(this.files)
-        //     // .subscribe((res: any) => {
-        //     // alert(res.msg);
-        //     // Resetting the input file tag
-        //     filesElement.value = '';
-        //     // });
-        //     console.log('uploadingfiles');
-        // } else {
-        //     alert('Please select files to upload!');
-        // }
-    }
-
     changeFiles(event: any) {
         this.newFamily.familyIcon = event.target.files[0];
+    }
+    removeErrorMessage() {
+        this.errorMessage = '';
     }
 }
